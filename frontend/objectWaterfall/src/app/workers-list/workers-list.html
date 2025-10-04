@@ -1,0 +1,9 @@
+<div class="workers-panel">
+    @if (workers() === undefined || workers() === null || workers()?.length === 0){
+        <p>There are no workers running</p>
+    } @else {
+        @for (worker of workers(); track worker) {
+            <app-workers-item [worker]="worker" (selectedItem)="onSelectWorker($event)"></app-workers-item>
+        }
+    }
+</div>

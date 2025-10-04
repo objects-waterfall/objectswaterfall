@@ -1,0 +1,14 @@
+textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    max-width: 100%;
+    background: #1d1d1d;
+    color: whitesmoke;
+}
+
+.json-data {
+    height: 40vh;
+}

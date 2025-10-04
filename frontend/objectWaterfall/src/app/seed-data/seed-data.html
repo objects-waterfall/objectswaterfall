@@ -1,0 +1,44 @@
+<div class="control-panel row">
+  <form (ngSubmit)="onSubmit()" >
+    <h2>Seed data</h2>
+    @if (!isMinimized()){
+      <div class="section">
+          <div class="input-group">
+            <label for="worker-name">Name</label>
+            <select id="worker-name" name="worker-name" placeholder="Enter Worker Name for Start"
+                    (change)="onSelect($event)">
+                    <option [ngValue]="null" disabled selected>Select a Worker</option>
+                   @for (worker of workers(); track worker) {
+                    <option value="{{worker.name}}">{{worker.name}}</option>
+                   }
+            </select>
+            <label for="json-data">Json data</label>
+            <textarea class="json-data" id="json-data" name="json-data"
+                      [(ngModel)]="data().jStr"
+                      placeholder='{"example":"data"}'></textarea>
+                      
+            <label for="how-many">How many</label>
+            <input type="number" id="how-many" name="count"
+                  [(ngModel)]="data().count">
+          </div>
+        </div>
+        
+        <button type="submit" [disabled]="isLoading()">
+          {{ isLoading() ? 'Seeding...' : 'Start' }}
+        </button>
+        
+        @if (errorMessage()) {
+          <div class="error-message">
+            {{ errorMessage() }}
+          </div>
+        }
+    }
+  </form>
+  <div (click)="resize()">
+  @if (isMinimized()){
+    <svg fill="#ffffff" width="25px" height="25px" viewBox="-2.4 -2.4 28.80 28.80" xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-fill="" style="--darkreader-inline-fill: var(--darkreader-background-ffffff, #181a1b); --darkreader-inline-stroke: var(--darkreader-text-ffffff, #e8e6e3);" stroke="#ffffff" data-darkreader-inline-stroke="" transform="rotate(0)matrix(-1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048" data-darkreader-inline-stroke="" style="--darkreader-inline-stroke: var(--darkreader-text-cccccc, #c8c3bc);"></g><g id="SVGRepo_iconCarrier"><path d="M21,14a1,1,0,0,0-1,1v3.59L5.41,4H9A1,1,0,0,0,9,2H3a1,1,0,0,0-.38.08,1,1,0,0,0-.54.54A1,1,0,0,0,2,3V9A1,1,0,0,0,4,9V5.41L18.59,20H15a1,1,0,0,0,0,2h6a1,1,0,0,0,.38-.08,1,1,0,0,0,.54-.54A1,1,0,0,0,22,21V15A1,1,0,0,0,21,14Z"></path></g></svg>
+    } @else {
+    <svg width="25px" height="25px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff" data-darkreader-inline-fill="" style="--darkreader-inline-fill: var(--darkreader-background-ffffff, #181a1b); --darkreader-inline-stroke: var(--darkreader-text-ffffff, #e8e6e3);" stroke="#ffffff" data-darkreader-inline-stroke=""><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools --> <title>ic_fluent_arrow_minimize_28_filled</title> <desc>Created with Sketch.</desc> <g id="🔍-System-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" data-darkreader-inline-stroke="" style="--darkreader-inline-stroke: none;"> <g id="ic_fluent_arrow_minimize_28_filled" fill="#ffffff" fill-rule="nonzero" data-darkreader-inline-fill="" style="--darkreader-inline-fill: var(--darkreader-background-ffffff, #181a1b);"> <path d="M4,15 L12,15 C12.5128358,15 12.9355072,15.3860402 12.9932723,15.8833789 L13,16 L13,24 C13,24.5522847 12.5522847,25 12,25 C11.4871642,25 11.0644928,24.6139598 11.0067277,24.1166211 L11,24 L11,18.413 L3.70710678,25.7071068 C3.31658249,26.0976311 2.68341751,26.0976311 2.29289322,25.7071068 C1.93240926,25.3466228 1.90467972,24.7793918 2.20970461,24.3871006 L2.29289322,24.2928932 L9.585,17 L4,17 C3.48716416,17 3.06449284,16.6139598 3.00672773,16.1166211 L3,16 C3,15.4871642 3.38604019,15.0644928 3.88337887,15.0067277 L4,15 L12,15 L4,15 Z M25.7071068,2.29289322 C26.0675907,2.65337718 26.0953203,3.22060824 25.7902954,3.61289944 L25.7071068,3.70710678 L18.413,11 L24,11 C24.5128358,11 24.9355072,11.3860402 24.9932723,11.8833789 L25,12 C25,12.5128358 24.6139598,12.9355072 24.1166211,12.9932723 L24,13 L16,13 C15.4871642,13 15.0644928,12.6139598 15.0067277,12.1166211 L15,12 L15,4 C15,3.44771525 15.4477153,3 16,3 C16.5128358,3 16.9355072,3.38604019 16.9932723,3.88337887 L17,4 L17,9.585 L24.2928932,2.29289322 C24.6834175,1.90236893 25.3165825,1.90236893 25.7071068,2.29289322 Z" id="🎨-Color"> </path> </g> </g> </g></svg>}
+  </div>
+</div>
+

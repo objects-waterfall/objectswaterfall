@@ -1,0 +1,20 @@
+<main>
+<div class="container row">
+  <div class="col text">
+    <p>Settings</p>
+    <app-worker-settings></app-worker-settings>
+    <app-seed-data [workers]="existingWorkers()"></app-seed-data>
+    <app-start-worker [workers]="existingWorkers()"></app-start-worker>
+  </div>
+  <div class="text col">
+    <p>Workers</p>
+    <app-workers-list [workers]="runningWorkers()" (selected)="onSelectedRunningWorker($event)"></app-workers-list>
+  </div>
+    <div class="col viewport text">
+      <p>{{selectedRunningWorker().name}} logs</p>
+      <div class="logs">
+        <app-worker-logs [workerName]="selectedRunningWorker().name" [inputLogs]="workerLogs()" [isWorkerChoosen]="isRunningWorkerSet()"></app-worker-logs>
+      </div>
+  </div>
+</div>
+</main>

@@ -1,0 +1,25 @@
+<div class="item-panel col">
+    <p>{{workerLog().Log}}</p>
+    <div class="row">
+        <div class="col">
+            <div class="row gap">
+                <div>
+                    <span>Success Attempts: </span>
+                    <span>{{workerLog().SuccessAttemptsCount}}</span>
+                </div>
+                <div>
+                    <span>Failed Attempts: </span>
+                    <span>{{workerLog().FailedAttemptsCount}}</span>
+                </div> 
+                <div>
+                    <span>Duration time: </span>
+                    <span>{{workerLog().requestDirationTime}} sec</span>
+                </div> 
+                <div>
+                    <span>Median time: </span>
+                    <span>{{workerLog().medianReuestDurationTime}} sec</span>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
