@@ -108,7 +108,7 @@ Receives a json body which contains the following fields:
 | authModel.authUrl | String | A URL where auth happens |
 | authModel.model | String | a json string which contains all what is needed for authorization on an API |
 
->**Warning - the authModel.mel is a string exactly. If you use Postman or other tools, you should wrap the whole json object with quates and use shielding In the backend it is parsed and treatment**
+>**Warning - the authModel.model is a string exactly. If you use Postman or other tools, you should wrap the whole json object with quates and use shielding In the backend it is parsed and treatment**
 
 #### Example
 URL 
