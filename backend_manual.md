@@ -9,7 +9,7 @@ When the backend has been run it receives requests on the 8888 port.
 ## Terms
 |Name    | Description |
 |:------:| ------------|
-| Worker | A unit to be spamming on an API endpoint |
+| Worker | A unit which is spamming requests to an API endpoint |
 
 ## Endpoints
 There are seven endpoints in the project:
