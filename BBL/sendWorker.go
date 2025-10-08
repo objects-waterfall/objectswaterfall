@@ -206,9 +206,7 @@ func (w *SendWorker) sendRequest(data dataResult, respCh chan requestResult) {
 		headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
 	}
 	resp, err := sending.SendRequest(w.settings.ConsumerSettings.Host, data.data, headers)
-	if err == nil {
-		w.totalSended += int64(len(data.data))
-	}
+	w.totalSended += int64(len(data.data))
 	respCh <- requestResult{
 		requestRes: resp,
 		err:        err,

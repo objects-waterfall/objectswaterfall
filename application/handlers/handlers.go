@@ -44,6 +44,8 @@ func Add(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	ctx.JSON(http.StatusOK, gin.H{"result": "The worker has been added successfully"})
 }
 
 func Start(ctx *gin.Context) {
@@ -105,6 +107,7 @@ func Start(ctx *gin.Context) {
 
 	go worker.DoWork(context)
 
+	// TODO: Fix response. Make it as {"result": obj/stirng}
 	ctx.JSON(http.StatusOK, gin.H{"workerId": workerId})
 }
 
