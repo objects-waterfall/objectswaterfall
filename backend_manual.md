@@ -104,7 +104,7 @@ Receives a json body which contains the following fields:
 |Name|data type|descriprion|
 |:---|:---:|---|
 | host | String | A URL to be spammed |
-| authModel | Object | A auterization model for getting token (new ways of auth will be added) |
+| authModel | Object | An autherization model for getting token (new ways of auth will be added) |
 | authModel.authUrl | String | A URL where auth happens |
 | authModel.model | String | a json string which contains all what is needed for authorization on an API |
 
