@@ -46,7 +46,7 @@ Receives no parameters and a json body which contains the following fields:
 |Name|data type|descriprion|
 |:---|:---:|---|
 | workerName | String | The name of a new worker |
-|timer| Float | A duration of requests sending in minutes |
+|timer| Float | A duration of the requests sending in minutes |
 |requestDellay| Float | A dellay between requests in seconds |
 |random| Boolean | Should a data be taken randomly from the database for the sertain worker |
 |writesNumberToSend| Integer | A number of records which should be taken from database for a single request |
