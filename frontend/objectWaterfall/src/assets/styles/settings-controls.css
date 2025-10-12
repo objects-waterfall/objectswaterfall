@@ -5,17 +5,25 @@ select {
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-    background: #1d1d1d;
+    background: rgba(255, 255, 255, 0.03);
     color: whitesmoke
 }
 
 .control-panel {
-    background-color: #1d1d1d;
+    /* background-color: #1d1d1d;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgb(95, 86, 86);
     padding: 20px;
     width: 30vh;
+    margin: 0 auto; */
+    padding: 20px;
     margin: 0 auto;
+    width: 30vh;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .section {
@@ -55,22 +63,36 @@ input[type="number"]{
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-    background: #1d1d1d;
+    background: rgba(255, 255, 255, 0.03);
     color: whitesmoke
 }
 
 button {
-    background-color: #2664ac;
+    /* background-color: #2664ac;
     color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: bold; */
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px 15px;
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
         
 button:hover {
-    background-color: #32448b;
+    /* background-color: #32448b; */
+    background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
         
 .section-title {
