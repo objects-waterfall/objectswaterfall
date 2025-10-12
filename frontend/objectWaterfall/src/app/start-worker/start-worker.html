@@ -14,9 +14,11 @@
                 </select>
                 <label for="target-url">Target URL</label>
                 <input type="text" id="target-url" name="target-url" placeholder="Enter target url (requered)" [(ngModel)]="startWorkerData().host" required>
+                <label for="auth-url">Auth URL</label>
+                <input type="text" id="auth-url" name="target-url" placeholder="Enter auth url" [(ngModel)]="startWorkerData().authModel.authUrl">
                 <label for="json-data">Authentification object</label>
                 <textarea class="json-data" id="json-data" name="json-data"
-                      [(ngModel)]="startWorkerData().authModel"
+                      [(ngModel)]="startWorkerData().authModel.model"
                       [placeholder]='placeholdertext'></textarea>
             </div>
         </div>

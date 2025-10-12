@@ -1,4 +1,9 @@
 export class StartWorkerData {
     host: string = ""
-    authModel: string = ""
+    authModel: AuthModel = new AuthModel()
+}
+
+export class AuthModel {
+    authUrl: string = ""
+    model: string = ""
 }
