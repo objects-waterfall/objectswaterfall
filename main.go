@@ -37,13 +37,19 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	engine.POST("/add", handlers.Add)
-	engine.POST("/start", handlers.Start)
-	engine.GET("/stop", handlers.Stop)
-	engine.POST("/seed", handlers.Seed)
-	engine.GET("/getWorkers", handlers.GetWorkers)
-	engine.GET("/getRunningWorkers", handlers.GetRunningWorkers)
-	engine.GET("/logsWs", handlers.WebSocketHandler)
+	//engine.Static("/", "./frontend/dist")
+
+	api := engine.Group("/api")
+	{
+		api.POST("/add", handlers.Add)
+		api.POST("/start", handlers.Start)
+		api.GET("/stop", handlers.Stop)
+		api.POST("/seed", handlers.Seed)
+		api.GET("/getWorkers", handlers.GetWorkers)
+		api.GET("/getRunningWorkers", handlers.GetRunningWorkers)
+		api.GET("/logsWs", handlers.WebSocketHandler)
+	}
+
 	//engine.Any("/logsConnection", gin.WrapH(mux))
 
 	engine.Run(":8888")
