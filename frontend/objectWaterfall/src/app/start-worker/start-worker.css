@@ -5,7 +5,7 @@ textarea {
     border-radius: 4px;
     box-sizing: border-box;
     max-width: 100%;
-    background: #1d1d1d;
+    background: rgba(255, 255, 255, 0.03);
     color: whitesmoke;
 }
 

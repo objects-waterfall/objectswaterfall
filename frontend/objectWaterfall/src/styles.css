@@ -5,7 +5,28 @@
     font-style: normal;
 }
 
-body {
+/* body {
     background: #1d1d1d;
     font-family: 'RobotoMono', monospace;
+} */
+
+/* *, *::before, *::after {
+  box-sizing: border-box;
+} */
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+     background: linear-gradient(to top, #133144, #31133E);
+     overflow-x: hidden;
+     min-height: 100vh;
+     font-weight: 400;
+     line-height: 1.6;
+     background-attachment: fixed;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
 }
