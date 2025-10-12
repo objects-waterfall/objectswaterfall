@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, output, signal, WritableSignal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { WorkerSettings } from "./worker-settings/worker-settings";
 import { SeedData } from "./seed-data/seed-data";
 import { StartWorker } from "./start-worker/start-worker";
@@ -11,59 +11,6 @@ import { Subscription } from 'rxjs';
 import { environment } from './environments/environments';
 import { LogModel } from './models/worker/worker-log';
 import { WorkersService } from './services/workers.service';
-
-const DUMMY_LOGS: LogModel[] = [
-    // {
-    //   Log: "test1",
-    //   SuccessAttemptsCount: 1,
-    //   FailedAttemptsCount: 0
-    // },
-    // {
-    //   Log: "test2",
-    //   SuccessAttemptsCount: 2,
-    //   FailedAttemptsCount: 0
-    // },
-    // {
-    //   Log: "test3",
-    //   SuccessAttemptsCount: 3,
-    //   FailedAttemptsCount: 754
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // },
-    // {
-    //   Log: "test4",
-    //   SuccessAttemptsCount: 0,
-    //   FailedAttemptsCount: 5
-    // }
-  ]
 
 @Component({
   selector: 'app-root',
@@ -120,32 +67,38 @@ export class App implements OnInit, OnDestroy {
   }
 
   async getRunningWorkers() {
-    this.isLoading.set(true)
-    let res = await this.workersService.getWorkers('getRunningWorkers')
-    if (res.Err !== ""){
-      this.errorMessage = res.Err
-      this.isLoading.set(false)
-      return
-    }
-    this.runningWorkers.set(res.Data)
-    this.isLoading.set(false)
+    this.isLoading.set(true);
+    this.workersService.getWorkers('getRunningWorkers').subscribe(res => {
+      if (res.Err !== "") {
+        this.errorMessage.set(res.Err);
+        this.isLoading.set(false);
+        return;
+      }
+      this.runningWorkers.set([...res.Data!]);
+      this.isLoading.set(false);
+    });
   }
 
   async getExistingWorkers() {
-    this.isLoading.set(true)
-    let res = await this.workersService.getWorkers('getWorkers')
-    if (res.Err !== ""){
-      this.errorMessage = res.Err
-      this.isLoading.set(false)
-      return
-    }
-    this.existingWorkers.set(res.Data)
-    this.isLoading.set(false)
+    this.isLoading.set(true);
+    this.workersService.getWorkers('getWorkers').subscribe(res => {
+      if (res.Err !== "") {
+        this.errorMessage.set(res.Err);
+        this.isLoading.set(false);
+        return;
+      }
+      this.existingWorkers.set([...res.Data!]);
+      this.isLoading.set(false);
+    });
   }
 
   onSelectedRunningWorker(id: number) {
     this.websocketService.send({"workerId" : id})
     this.selectedRunningWorker.set(this.runningWorkers().find(x => x.id == id)!)
     this.isRunningWorkerSet.set(true)
+  }
+
+  async onNewWorkerStarted() {
+    await this.getRunningWorkers()
   }
 }
