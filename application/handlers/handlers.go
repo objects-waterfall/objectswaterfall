@@ -16,6 +16,7 @@ import (
 	"objectswaterfall.com/application/queries"
 	"objectswaterfall.com/core/mappers"
 	"objectswaterfall.com/core/models"
+	"objectswaterfall.com/core/models/enums"
 	"objectswaterfall.com/data/repositories"
 	"objectswaterfall.com/stores"
 )
@@ -125,9 +126,17 @@ func Stop(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	worker, err := store.Get(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	log := (*worker).Log()
+	log.WorkerStopStatus = enums.StoppedByUser
+
 	err = store.Remove(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -233,7 +242,7 @@ func WebSocketHandler(ctx *gin.Context) {
 			return
 		}
 
-		(*worker).SetLogFunc(func(l models.LogModel) {
+		(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
 			data, _ := json.Marshal(l)
 			go func() {
 				err := conn.WriteMessage(msgType, data)

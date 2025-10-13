@@ -10,6 +10,7 @@ import (
 
 	"objectswaterfall.com/core/errors"
 	"objectswaterfall.com/core/models"
+	"objectswaterfall.com/core/models/enums"
 	"objectswaterfall.com/core/services"
 	"objectswaterfall.com/data/repositories"
 	"objectswaterfall.com/utils/stopwatch"
@@ -27,7 +28,7 @@ type SendWorker struct {
 	totalSended  int64
 	tokenService TokenService
 	medianValue  models.MedianValue
-	log          *models.LogModel
+	log          *models.WorkerJobLogModel
 	models.LogFunc
 }
 
@@ -50,18 +51,27 @@ func NewSendWorker(settings models.BackgroundWorkerSettings, tokenService TokenS
 		settings:     settings,
 		repo:         repo,
 		tokenService: tokenService,
-		log:          &models.LogModel{},
-		medianValue:  models.NewMedianValue(),
+		log: &models.WorkerJobLogModel{
+			WorkerLog: models.WorkerLog{
+				WorkerName:       settings.WorkerName,
+				TotalItemsToSend: settings.TotalToSend,
+			},
+		},
+		medianValue: models.NewMedianValue(),
 	}
 }
 
 func (w *SendWorker) DoWork(ctx context.Context) {
 	log.Printf("Worker was started at %v", time.Now())
+	w.log.StartTime = time.Now()
 	var counter int64 = 0
 	for {
 		select {
 		case <-ctx.Done():
 			log.Printf("Worker was stoped at %v, because of: %s ", time.Now(), ctx.Err().Error())
+			if w.log.WorkerStopStatus == 0 {
+				w.log.WorkerStopStatus = enums.StoppedByTimer
+			}
 			return
 		default:
 			w.work(&counter)
@@ -74,15 +84,20 @@ func (w *SendWorker) SetCancel(cancel context.CancelFunc) {
 }
 
 func (w *SendWorker) Cancel() {
-	w.cancelFunc()
 	w.group.Wait()
+	w.log.StopTime = time.Now()
+	if w.LogFunc != nil {
+		w.LogFunc(*w.log)
+	}
+	// Store the last log
+	w.cancelFunc()
 }
 
 func (w *SendWorker) GetWorkerName() string {
 	return w.settings.WorkerName
 }
 
-func (w *SendWorker) Log() *models.LogModel {
+func (w *SendWorker) Log() *models.WorkerJobLogModel {
 	return w.log
 }
 
@@ -92,15 +107,14 @@ func (w *SendWorker) SetLogFunc(logFunc models.LogFunc) {
 
 func (w *SendWorker) work(counter *int64) {
 	w.group.Add(1)
-
 	go w.actualWork()
 	*counter += 1
+	w.log.RequestNumber = *counter
 
 	if w.totalSended >= w.settings.TotalToSend {
 		w.group.Wait()
 		log.Printf("Worker is done. Sent %d of %d", w.totalSended, w.settings.TotalToSend)
-		w.log.Log = fmt.Sprintf("Worker is done. Sent %d of %d", w.totalSended, w.settings.TotalToSend)
-		w.log.MedianReuestDurationTime = w.medianValue.FindMedian()
+		w.log.WorkerStopStatus = enums.StoppedByCondition
 		if w.LogFunc != nil {
 			w.LogFunc(*w.log)
 		}
@@ -117,6 +131,10 @@ func (w *SendWorker) work(counter *int64) {
 		case !w.settings.StopWhenTableEnds && !w.settings.Random:
 			w.totalSended = 0
 		case w.settings.StopWhenTableEnds && !w.settings.Random:
+			w.log.WorkerStopStatus = enums.StoppedByCondition
+			if w.LogFunc != nil {
+				w.LogFunc(*w.log)
+			}
 			w.Cancel()
 		}
 	}
@@ -141,7 +159,8 @@ func (w *SendWorker) actualWork() {
 	requstDuration := sw.Elapsed(time.Second)
 	if respRes.err != nil {
 		w.medianValue.AddNum(requstDuration)
-		w.setLog(fmt.Sprintf(failedMessage+" error %s", w.log.SuccessAttemptsCount+w.log.FailedAttemptsCount, w.settings.WorkerName, w.totalSended, w.settings.TotalToSend, respRes.err), requstDuration, false)
+		w.setLog(w.totalSended, requstDuration, false)
+		w.log.RequestErrorMessage = respRes.err.Error()
 		if w.LogFunc != nil {
 			w.LogFunc(*w.log)
 		}
@@ -154,7 +173,7 @@ func (w *SendWorker) actualWork() {
 		return
 	}
 	w.medianValue.AddNum(requstDuration)
-	w.setLog(fmt.Sprintf(successMessage, w.log.SuccessAttemptsCount+w.log.FailedAttemptsCount, w.settings.WorkerName, w.totalSended, w.settings.TotalToSend), requstDuration, true)
+	w.setLog(w.totalSended, requstDuration, true)
 	if w.LogFunc != nil {
 		w.LogFunc(*w.log)
 	}
@@ -206,22 +225,23 @@ func (w *SendWorker) sendRequest(data dataResult, respCh chan requestResult) {
 		headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
 	}
 	resp, err := sending.SendRequest(w.settings.ConsumerSettings.Host, data.data, headers)
-	if err == nil {
-		w.totalSended += int64(len(data.data))
-	}
+	w.totalSended += int64(len(data.data))
 	respCh <- requestResult{
 		requestRes: resp,
 		err:        err,
 	}
 }
 
-func (w *SendWorker) setLog(msg string, duration float64, isSuccess bool) {
-	w.log.Log = msg
+// TODO: Make a more definitive name
+func (w *SendWorker) setLog(sended int64, duration float64, isSuccess bool) {
 	w.log.RequestDirationTime = duration
 	w.log.MedianReuestDurationTime = w.medianValue.FindMedian()
+	w.log.ItemsSended = sended
 	if isSuccess {
+		w.log.CurrentRequestStatus = enums.Success
 		w.log.SuccessAttemptsCount++
 	} else {
+		w.log.CurrentRequestStatus = enums.Failed
 		w.log.FailedAttemptsCount++
 	}
 }
