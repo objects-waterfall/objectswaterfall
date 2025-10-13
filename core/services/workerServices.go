@@ -20,6 +20,6 @@ type Worker interface {
 	SetCancel(context.CancelFunc)
 	Cancel()
 	GetWorkerName() string
-	Log() *models.LogModel
+	Log() *models.WorkerJobLogModel
 	SetLogFunc(logFunc models.LogFunc)
 }
