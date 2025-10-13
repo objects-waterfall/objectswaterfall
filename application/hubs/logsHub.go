@@ -40,7 +40,7 @@ func (h *LogsHub) PushLogs(workerId int) {
 	if err != nil {
 		go h.Clients().Caller().Send("/receiveError", err.Error())
 	}
-	(*worker).SetLogFunc(func(l models.LogModel) {
+	(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
 		go h.Clients().Caller().Send("/recieveLog", l)
 	})
 }
