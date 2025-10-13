@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { environment } from './environments/environments';
 import { LogModel } from './models/worker/worker-log';
 import { WorkersService } from './services/workers.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -68,15 +69,14 @@ export class App implements OnInit, OnDestroy {
 
   async getRunningWorkers() {
     this.isLoading.set(true);
-    this.workersService.getWorkers('getRunningWorkers').subscribe(res => {
-      if (res.Err !== "") {
-        this.errorMessage.set(res.Err);
-        this.isLoading.set(false);
-        return;
-      }
-      this.runningWorkers.set([...res.Data!]);
+    const res = await firstValueFrom(this.workersService.getWorkers('getRunningWorkers'));
+    if (res.Err !== "") {
+      this.errorMessage.set(res.Err);
       this.isLoading.set(false);
-    });
+      return;
+    }
+    this.runningWorkers.set([...res.Data!]); // ensure new array reference
+    this.isLoading.set(false);
   }
 
   async getExistingWorkers() {
@@ -98,7 +98,11 @@ export class App implements OnInit, OnDestroy {
     this.isRunningWorkerSet.set(true)
   }
 
-  async onNewWorkerStarted() {
-    await this.getRunningWorkers()
+  async onNewWorkerStarted(id: number) {
+    await this.getRunningWorkers();
+    const newWorker = this.runningWorkers().find(x => x.id === id);
+    if (newWorker) {
+      this.onSelectedRunningWorker(id)
+    }
   }
 }

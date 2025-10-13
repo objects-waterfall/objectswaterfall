@@ -4,7 +4,7 @@
     <p>Settings</p>
     <app-worker-settings></app-worker-settings>
     <app-seed-data [workers]="existingWorkers()"></app-seed-data>
-    <app-start-worker [workers]="existingWorkers()" (newWorkerStarted)="onNewWorkerStarted()"></app-start-worker>
+    <app-start-worker [workers]="existingWorkers()" (newWorkerStarted)="onNewWorkerStarted($event)"></app-start-worker>
   </div>
   <div class="text col">
     <p>Workers</p>

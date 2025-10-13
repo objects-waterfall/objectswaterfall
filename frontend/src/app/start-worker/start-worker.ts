@@ -24,7 +24,7 @@ export class StartWorker {
   startWorkerData = signal(new StartWorkerData())
   workers = input<WorkerItemModel[]>()
   selected = signal(0)
-  newWorkerStarted = output()
+  newWorkerStarted = output<number>()
 
   onSelect(event: Event){
     const selectedWorker = (event.target as HTMLSelectElement).value;
@@ -32,9 +32,9 @@ export class StartWorker {
   }
 
   onStart(){
-        this.http.post(environment.baseAddress + 'start?id=' + this.selected(), this.startWorkerData()).subscribe({
-          next: _ => {
-            this.newWorkerStarted.emit()
+        this.http.post<{workerId: number}>(environment.baseAddress + 'start?id=' + this.selected(), this.startWorkerData()).subscribe({
+          next: res => {
+            this.newWorkerStarted.emit(res.workerId)
           },
           error: err => {
             this.errorMessage.set(err.error.error)
