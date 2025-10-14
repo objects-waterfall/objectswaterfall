@@ -215,6 +215,28 @@ func GetRunningWorkers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"result": workersDto})
 }
 
+func GetWorkerResults(ctx *gin.Context) {
+	workerName := ctx.Query("workerName")
+	repo, err := repositories.NewRepository[any]()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	results, err := repo.GetWorkerResults(workerName)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var resultsDto []dtos.WorkerResultsDto
+	for _, v := range *results {
+		resultsDto = append(resultsDto, dtos.ToLogResult(v))
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"result": resultsDto})
+}
+
 var connMutex sync.Mutex
 var dataCh = make(chan []byte, 100)
 
