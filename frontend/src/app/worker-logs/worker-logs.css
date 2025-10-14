@@ -12,3 +12,16 @@
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
+
+.item-panel {
+    padding: 1vh;
+    border-bottom: 1px solid whitesmoke;
+}
+
+.gap {
+    gap: 5vh;
+}
+
+.error-text {
+    color: red;
+}

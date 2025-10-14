@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { WorkerSettings } from "./worker-settings/worker-settings";
 import { SeedData } from "./seed-data/seed-data";
 import { StartWorker } from "./start-worker/start-worker";
-import { WorkerLogs } from "./worker-logs/worker-logs";
+import { WorkerLog } from "./worker-logs/worker-logs";
 import { WorkersList } from "./workers-list/workers-list";
 import { WorkerItemModel } from './models/worker/worker-item';
 
@@ -12,10 +12,11 @@ import { environment } from './environments/environments';
 import { LogModel } from './models/worker/worker-log';
 import { WorkersService } from './services/workers.service';
 import { firstValueFrom } from 'rxjs';
+import { registerLocaleData } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [WorkerSettings, SeedData, StartWorker, WorkerLogs, WorkersList],
+  imports: [WorkerSettings, SeedData, StartWorker, WorkerLog, WorkersList, WorkerLog],
   templateUrl: './app.html',
   styleUrls: ['./app.css',
     '../assets/styles/settings-controls.css'
@@ -25,13 +26,12 @@ export class App implements OnInit, OnDestroy {
   private websocketService = inject(WorkerRealtimeLogs)
   private workersService = inject(WorkersService)
   private subscription!: Subscription
-  private receivedMessages: LogModel[] = []
 
   runningWorkers = signal<WorkerItemModel[]>([])
   existingWorkers = signal<WorkerItemModel[]>([])
   isLoading = signal<boolean>(false)
   errorMessage = signal<string | null>(null)
-  workerLogs = signal<LogModel[]>([])
+  workerLog = signal<LogModel>(new LogModel())
   selectedForStartWorker = signal<WorkerItemModel>(new WorkerItemModel(0, ""))
   selectedRunningWorker = signal<WorkerItemModel>(new WorkerItemModel(0, ""))
   isRunningWorkerSet = signal<boolean>(false);
@@ -47,16 +47,10 @@ export class App implements OnInit, OnDestroy {
     this.websocketService.startConnection(environment.baseAddress + 'logsWs')
     this.subscription = this.websocketService.messages$.subscribe({
       next: (msg: LogModel) => {
-        let updated: LogModel[] = []
-        if (this.receivedMessages.length >= 10){
-          this.receivedMessages.pop()
-          this.receivedMessages.push(new LogModel(msg))
-          updated = [...this.receivedMessages].reverse();
-        } else {
-          this.receivedMessages.push(new LogModel(msg))
-          updated = [...this.receivedMessages].reverse();
+        const selected = this.selectedRunningWorker().name
+        if (selected === msg.WorkerName){
+          this.workerLog.set(new LogModel(msg))
         }
-        this.workerLogs.set(updated)
       },
       error: err => this.errorMessage = err,
       complete: () => console.log('Socket close')
