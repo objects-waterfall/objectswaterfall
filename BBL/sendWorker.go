@@ -16,10 +16,6 @@ import (
 	"objectswaterfall.com/utils/stopwatch"
 )
 
-const totalMessage = "|| Total amount of records have been sent %d of %d"
-const successMessage = "Request %d of %s was success " + totalMessage
-const failedMessage = "Request %d of %s was failed " + totalMessage
-
 type SendWorker struct {
 	settings     models.BackgroundWorkerSettings
 	cancelFunc   context.CancelFunc
