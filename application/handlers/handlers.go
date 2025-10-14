@@ -232,21 +232,18 @@ func WebSocketHandler(ctx *gin.Context) {
 	for {
 		msgType, p, err := conn.ReadMessage()
 		if err != nil {
-			//ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			errCh <- err
 			break
 		}
 		var wr queries.WorkerRequest
 		err = json.Unmarshal(p, &wr)
 		if err != nil {
-			//ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			errCh <- err
 			break
 		}
 
 		worker, err := store.Get(wr.WorkerId)
 		if err != nil {
-			//ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			errCh <- err
 			break
 		}
