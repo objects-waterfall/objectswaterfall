@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { WorkerSettingsModel } from '../models/worker/worker-settings';
+import { environment } from '../environments/environments';
 
 @Component({
   selector: 'app-worker-settings',
@@ -45,7 +46,7 @@ export class WorkerSettings {
   sendSettings() {
     const payload = this.newSettings();
     console.log(payload)
-    this.http.post('http://localhost:8888/add', payload).subscribe({
+    this.http.post(environment.baseAddress + 'add', payload).subscribe({
       next: response => {
         this.isLoading.set(false)
       },

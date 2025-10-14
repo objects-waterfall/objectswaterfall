@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"objectswaterfall.com/core/models"
 	"objectswaterfall.com/data"
@@ -152,6 +153,81 @@ func (r mySqlRepositiry[T]) AddSettings(settings models.BackgroundWorkerSettings
 	}
 
 	return nil
+}
+
+func (r mySqlRepositiry[T]) AddWorkerResult(log models.WorkerJobLogModel) error {
+	_, err := data.DbContext.Db.Exec(data.CreateWorkersResultsTable)
+	if err != nil {
+		return err
+	}
+
+	query := data.DbContext.Db.QueryRow(data.WorkerSettingsId, log.WorkerName)
+	var workerSettingsId int64
+	query.Scan(&workerSettingsId)
+
+	stmt, err := data.DbContext.Db.Prepare(data.InsertWorkerResults)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+	_, err = stmt.Exec(
+		workerSettingsId,
+		log.StartTime,
+		log.StopTime,
+		log.MedianReuestDurationTime,
+		log.ItemsSended,
+		log.SuccessAttemptsCount,
+		log.FailedAttemptsCount,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r mySqlRepositiry[T]) GetWorkerResults(workerName string) (*[]models.WorkerJobLogModel, error) {
+	rows, err := data.DbContext.Db.Query(data.GetWorkerResults, workerName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var startTimeStr, stopTimeStr string
+	layout := "2006-01-02 15:04:05.999999-07:00"
+	var logs []models.WorkerJobLogModel
+	for rows.Next() {
+		var workerName string
+		var log models.WorkerJobLogModel
+		err := rows.Scan(&workerName,
+			&startTimeStr,
+			&stopTimeStr,
+			&log.MedianReuestDurationTime,
+			&log.ItemsSended,
+			&log.SuccessAttemptsCount,
+			&log.FailedAttemptsCount)
+
+		if err != nil {
+			return nil, err
+		}
+
+		log.WorkerName = workerName
+		log.StartTime, err = time.Parse(layout, startTimeStr)
+		if err != nil {
+			return nil, err
+		}
+		log.StopTime, err = time.Parse(layout, stopTimeStr)
+		if err != nil {
+			return nil, err
+		}
+		logs = append(logs, log)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &logs, nil
 }
 
 func (r mySqlRepositiry[T]) GetWorkerSettings(settingsWorkerName string) (*models.BackgroundWorkerSettings, error) {

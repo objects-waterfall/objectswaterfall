@@ -62,16 +62,25 @@ func NewSendWorker(settings models.BackgroundWorkerSettings, tokenService TokenS
 }
 
 func (w *SendWorker) DoWork(ctx context.Context) {
-	log.Printf("Worker was started at %v", time.Now())
-	w.log.StartTime = time.Now()
+	log.Printf("Worker was started at %v", time.Now().UTC())
+	w.log.StartTime = time.Now().UTC()
 	var counter int64 = 0
 	for {
 		select {
 		case <-ctx.Done():
-			log.Printf("Worker was stoped at %v, because of: %s ", time.Now(), ctx.Err().Error())
+			log.Printf("Worker was stoped at %v, because of: %s ", time.Now().UTC(), ctx.Err().Error())
 			if w.log.WorkerStopStatus == 0 {
 				w.log.WorkerStopStatus = enums.StoppedByTimer
 			}
+			repo, err := repositories.NewRepository[*[]models.WorkerJobLogModel]()
+			if err != nil {
+				panic(err)
+			}
+			err = repo.AddWorkerResult(*w.log)
+			if err != nil {
+				log.Printf("error during saving worker result: %s", err)
+			}
+			w.Cancel()
 			return
 		default:
 			w.work(&counter)
@@ -84,13 +93,12 @@ func (w *SendWorker) SetCancel(cancel context.CancelFunc) {
 }
 
 func (w *SendWorker) Cancel() {
-	w.log.StopTime = time.Now()
+	defer w.cancelFunc()
+	w.group.Wait()
+	w.log.StopTime = time.Now().UTC()
 	if w.LogFunc != nil {
 		w.LogFunc(*w.log)
 	}
-	w.group.Wait()
-	// Store the last log
-	w.cancelFunc()
 }
 
 func (w *SendWorker) GetWorkerName() string {

@@ -47,6 +47,7 @@ func main() {
 		api.POST("/seed", handlers.Seed)
 		api.GET("/getWorkers", handlers.GetWorkers)
 		api.GET("/getRunningWorkers", handlers.GetRunningWorkers)
+		api.GET("/getWorkerResults", handlers.GetWorkerResults)
 		api.GET("/logsWs", handlers.WebSocketHandler)
 	}
 
