@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -214,13 +215,18 @@ func GetRunningWorkers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"result": workersDto})
 }
 
+var connMutex sync.Mutex
+var dataCh = make(chan []byte, 100)
+
 func WebSocketHandler(ctx *gin.Context) {
+	errCh := make(chan error, 1)
 	conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	defer conn.Close()
+	defer close(errCh)
 	store := stores.GetWorkerStore()
 
 	for {
@@ -244,11 +250,16 @@ func WebSocketHandler(ctx *gin.Context) {
 
 		(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
 			data, _ := json.Marshal(l)
+			dataCh <- data
 			go func() {
-				err := conn.WriteMessage(msgType, data)
-				if err != nil {
-					ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-					return
+				for msg := range dataCh {
+					connMutex.Lock()
+					err := conn.WriteMessage(msgType, msg)
+					connMutex.Unlock()
+					if err != nil {
+						errCh <- err
+						return
+					}
 				}
 			}()
 		})

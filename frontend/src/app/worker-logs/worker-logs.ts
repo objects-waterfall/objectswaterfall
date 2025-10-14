@@ -1,19 +1,20 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { LogModel } from '../models/worker/worker-log';
-import { WorkerLogItem } from '../worker-log-item/worker-log-item';
-import { sign } from 'node:crypto';
+import { WorkerStopStatus } from '../models/enums/worker-stop-status';
+import { WorkerRequestStatus } from '../models/enums/worker-request-status';
 
 @Component({
-  selector: 'app-worker-logs',
-  imports: [WorkerLogItem],
+  selector: 'app-worker-log',
+  imports: [],
   templateUrl: './worker-logs.html',
   styleUrls:[
     './worker-logs.css',
     '../../assets/styles/settings-controls.css'
   ]
 })
-export class WorkerLogs {
-  workerName = input<string>()
-  inputLogs = input<LogModel[]>()
+export class WorkerLog {
+  WorkerStopStatus = WorkerStopStatus
+  CurrentRequestStatus = WorkerRequestStatus
+  inputLog = input.required<LogModel>()
   isWorkerChoosen = input<boolean>()
 }

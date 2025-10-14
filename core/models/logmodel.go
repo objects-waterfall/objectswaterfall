@@ -6,6 +6,8 @@ import (
 	"objectswaterfall.com/core/models/enums"
 )
 
+type LogFunc func(WorkerJobLogModel)
+
 type WorkerJobLogModel struct {
 	WorkerLog
 	WorkerRequestLog
@@ -15,8 +17,6 @@ type WorkerJobLogModel struct {
 	SuccessAttemptsCount int64
 	FailedAttemptsCount  int64
 }
-
-type LogFunc func(WorkerJobLogModel)
 
 type WorkerLog struct {
 	WorkerName       string

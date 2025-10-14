@@ -2,8 +2,83 @@
     @if (!isWorkerChoosen()){
         <p>Choose a worker</p>
     } @else {
-        @for (log of inputLogs(); track log) {
-        <app-worker-log-item [workerLog]="log"></app-worker-log-item>
-        }
+       <div class="item-panel col">
+        <div class="row">
+            <div class="col">
+                    <div>
+                        <span>Worker name: </span>
+                        <span>{{inputLog().WorkerName}}</span>
+                    </div>
+                    <div>
+                        <span>Start at: </span>
+                        <span>{{inputLog().StartTime}}</span>
+                    </div>
+                    <div>
+                        <span>Stopped at: </span>
+                        <span>{{inputLog().StopTime}}</span>
+                    </div>
+                    <div>
+                        <span>Worker status: </span>
+                        @switch (inputLog().WorkerStopStatus) {
+                            @case (WorkerStopStatus.runnning) {
+                                <span>Worker is running</span>
+                            }
+                            @case (WorkerStopStatus.StoppedByUser) {
+                                <span>Worker has been stopped by user</span>
+                            }
+                            @case (WorkerStopStatus.StoppedByTimer) {
+                                <span>Worker time is up and it has been stopped</span>
+                            }
+                            @case (WorkerStopStatus.StoppedByCondition) {
+                                <span>Worker has been stopped by condition according its settings</span>
+                            }
+                            @case (WorkerStopStatus.StoppeByError) {
+                                <span>Worker has been stopped by error:</span>
+                                <span>{{inputLog().RequestErrorMessage}}</span>
+                            }
+                        }
+                    </div>
+                    <div>
+                        <span>Total items to be send: </span>
+                        <span>{{inputLog().TotalItemsToSend}}</span>
+                    </div>
+                    <div>
+                        <span>Items have been sent: </span>
+                        <span>{{inputLog().ItemsSended}}</span>
+                    </div>
+                    <div>
+                        <span>Curent request status: </span>
+                        @switch (inputLog().CurrentRequestStatus) {
+                            @case (undefined) {
+                                <span>Waiting status</span>
+                            }
+                            @case (CurrentRequestStatus.Success) {
+                                <span>Request is success</span>
+                            }
+                            @case (CurrentRequestStatus.Failed) {
+                                <span>Request is failed - </span>
+                                <span class="error-text">{{inputLog().RequestErrorMessage}}</span>
+                            }
+                        }
+                    </div>
+                    <div>
+                        <span>Success Attempts: </span>
+                        <span>{{inputLog().SuccessAttemptsCount}}</span>
+                    </div>
+                    <div>
+                        <span>Failed Attempts: </span>
+                        <span>{{inputLog().FailedAttemptsCount}}</span>
+                    </div> 
+                    <div>
+                        <span>Duration time: </span>
+                        <span>{{inputLog().RequestDirationTime}} sec</span>
+                    </div> 
+                    <div>
+                        <span>Median time: </span>
+                        <span>{{inputLog().MedianReuestDurationTime}} sec</span>
+                    </div> 
+            </div>
+        </div>
+    </div>
     }
 </div>

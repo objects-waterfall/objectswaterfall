@@ -84,11 +84,11 @@ func (w *SendWorker) SetCancel(cancel context.CancelFunc) {
 }
 
 func (w *SendWorker) Cancel() {
-	w.group.Wait()
 	w.log.StopTime = time.Now()
 	if w.LogFunc != nil {
 		w.LogFunc(*w.log)
 	}
+	w.group.Wait()
 	// Store the last log
 	w.cancelFunc()
 }

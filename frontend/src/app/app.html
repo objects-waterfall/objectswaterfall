@@ -13,7 +13,7 @@
     <div class="col viewport text">
       <p>{{selectedRunningWorker().name}} logs</p>
       <div class="logs">
-        <app-worker-logs [workerName]="selectedRunningWorker().name" [inputLogs]="workerLogs()" [isWorkerChoosen]="isRunningWorkerSet()"></app-worker-logs>
+        <app-worker-log [inputLog]="workerLog()" [isWorkerChoosen]="isRunningWorkerSet()"></app-worker-log>
       </div>
   </div>
 </div>
