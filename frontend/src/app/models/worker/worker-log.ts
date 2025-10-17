@@ -6,7 +6,7 @@ export class LogModel {
     WorkerStopStatus: WorkerStopStatus | undefined
     TotalItemsToSend = 0
     ItemsSended = 0
-    CurrentRequestStatus = WorkerRequestStatus.Failed
+    CurrentRequestStatus: WorkerRequestStatus | undefined
     RequestErrorMessage: string | undefined
     RequestDirationTime = 0
     MedianReuestDurationTime = 0
@@ -26,8 +26,8 @@ export class LogModel {
       this.RequestErrorMessage = data.RequestErrorMessage ?? undefined
       this.RequestDirationTime = this.formatDuration(data.RequestDirationTime);
       this.MedianReuestDurationTime = this.formatDuration(data.MedianReuestDurationTime);
-      this.StartTime = data.StartTime ?? new Date()
-      this.StopTime = data.StopTime ?? null
+      this.StartTime = new Date(data.StartTime ?? new Date());
+      this.StopTime = data.StopTime ? new Date(data.StopTime) : null;
       this.RequestNumber = data.RequestNumber ?? 0
       this.SuccessAttemptsCount = data.SuccessAttemptsCount ?? 0;
       this.FailedAttemptsCount = data.FailedAttemptsCount ?? 0;

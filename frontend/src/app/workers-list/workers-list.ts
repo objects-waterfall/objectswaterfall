@@ -11,8 +11,13 @@ import { WorkersItem } from '../workers-item/workers-item';
 export class WorkersList {
   workers = input<WorkerItemModel[]>()
   selected = output<number>()
+  stoppedWorker = output<{id: number, name: string}>()
 
   onSelectWorker(id: number){
     this.selected.emit(id)
+  }
+
+  onWorkerStopped(worker: {id: number, name: string}){
+    this.stoppedWorker.emit(worker)
   }
 }

@@ -5,20 +5,20 @@
        <div class="item-panel col">
         <div class="row">
             <div class="col">
-                    <div>
-                        <span>Worker name: </span>
+                    <div class="gap">
+                        <span class="bold-text">Worker name: </span>
                         <span>{{inputLog().WorkerName}}</span>
                     </div>
-                    <div>
-                        <span>Start at: </span>
-                        <span>{{inputLog().StartTime}}</span>
+                    <div class="gap">
+                        <span class="bold-text">Start at: </span>
+                        <span>{{inputLog().StartTime | date:'EEEE d, MMMM, y (dd.MM.yyyy HH:mm:ss)'}}</span>
                     </div>
-                    <div>
-                        <span>Stopped at: </span>
-                        <span>{{inputLog().StopTime}}</span>
+                    <div class="gap">
+                        <span class="bold-text">Stopped at: </span>
+                        <span>{{inputLog().StopTime | date:'EEEE d, MMMM, y (dd.MM.yyyy HH:mm:ss)'}}</span>
                     </div>
-                    <div>
-                        <span>Worker status: </span>
+                    <div class="gap">
+                        <span class="bold-text">Worker status: </span>
                         @switch (inputLog().WorkerStopStatus) {
                             @case (WorkerStopStatus.runnning) {
                                 <span>Worker is running</span>
@@ -38,43 +38,51 @@
                             }
                         }
                     </div>
-                    <div>
-                        <span>Total items to be send: </span>
+                    <div class="gap">
+                        <span class="bold-text">Total items to be send: </span>
                         <span>{{inputLog().TotalItemsToSend}}</span>
                     </div>
-                    <div>
-                        <span>Items have been sent: </span>
+                    <div class="gap">
+                        <span class="bold-text">Items have been sent: </span>
                         <span>{{inputLog().ItemsSended}}</span>
                     </div>
                     <div>
-                        <span>Curent request status: </span>
-                        @switch (inputLog().CurrentRequestStatus) {
-                            @case (undefined) {
-                                <span>Waiting status</span>
+                        <div class="gap">
+                            <span class="bold-text">Curent request status: </span>
+                            @switch (inputLog().CurrentRequestStatus) {
+                                @case (undefined) {
+                                    <span>Waiting status</span>
+                                }
+                                @case (CurrentRequestStatus.Success) {
+                                    <span>Request is success</span>
+                                }
+                                @case (CurrentRequestStatus.Failed) {
+                                    <span>Request is failed </span>
+                                }
                             }
-                            @case (CurrentRequestStatus.Success) {
-                                <span>Request is success</span>
-                            }
-                            @case (CurrentRequestStatus.Failed) {
-                                <span>Request is failed - </span>
+                        </div>
+                        @if (inputLog().RequestErrorMessage !== "" || inputLog().RequestErrorMessage !== undefined)
+                        {
+                            <div class="row gap">
+                                <span>Error:</span>
                                 <span class="error-text">{{inputLog().RequestErrorMessage}}</span>
-                            }
+                            </div>
                         }
                     </div>
-                    <div>
-                        <span>Success Attempts: </span>
+                    <div class="gap">
+                        <span class="bold-text">Success Attempts: </span>
                         <span>{{inputLog().SuccessAttemptsCount}}</span>
                     </div>
-                    <div>
-                        <span>Failed Attempts: </span>
+                    <div class="gap">
+                        <span class="bold-text">Failed Attempts: </span>
                         <span>{{inputLog().FailedAttemptsCount}}</span>
                     </div> 
-                    <div>
-                        <span>Duration time: </span>
+                    <div class="gap">
+                        <span class="bold-text">Duration time: </span>
                         <span>{{inputLog().RequestDirationTime}} sec</span>
                     </div> 
-                    <div>
-                        <span>Median time: </span>
+                    <div class="gap">
+                        <span class="bold-text">Median time: </span>
                         <span>{{inputLog().MedianReuestDurationTime}} sec</span>
                     </div> 
             </div>

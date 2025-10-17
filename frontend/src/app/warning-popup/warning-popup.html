@@ -1,0 +1,14 @@
+@if (showPopup()) {
+  <div class="popup-overlay">
+    <div class="control-panel popup-col">
+        <div>
+            <h3>⚠️ {{title()}}</h3>
+            <p>{{message()}}</p>
+        </div>
+      <div class="popup-row">
+        <button (click)="confirmAction()">Yes, stop</button>
+        <button (click)="closePopup()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,19 +1,28 @@
 <main>
+<app-warning-popup (confirm)="onConfirmStopWorker($event)" [showPopup]="showWarningPopup()" [message]="warningMessage()" [title]="warningTitle()"></app-warning-popup>
 <div class="container row">
   <div class="col text">
     <p>Settings</p>
     <app-worker-settings></app-worker-settings>
-    <app-seed-data [workers]="existingWorkers()"></app-seed-data>
-    <app-start-worker [workers]="existingWorkers()" (newWorkerStarted)="onNewWorkerStarted($event)"></app-start-worker>
+    <app-seed-data 
+      [workers]="existingWorkers()"></app-seed-data>
+    <app-start-worker 
+      [workers]="existingWorkers()" 
+      (newWorkerStarted)="onNewWorkerStarted($event)"></app-start-worker>
   </div>
   <div class="text col">
     <p>Workers</p>
-    <app-workers-list [workers]="runningWorkers()" (selected)="onSelectedRunningWorker($event)"></app-workers-list>
+    <app-workers-list 
+      [workers]="runningWorkers()" 
+      (selected)="onSelectedRunningWorker($event)"
+      (stoppedWorker)="onStoppedWorker($event)"></app-workers-list>
   </div>
     <div class="col viewport text">
       <p>{{selectedRunningWorker().name}} logs</p>
       <div class="logs">
-        <app-worker-log [inputLog]="workerLog()" [isWorkerChoosen]="isRunningWorkerSet()"></app-worker-log>
+        <app-worker-log 
+          [inputLog]="workerLog()" 
+          [isWorkerChoosen]="isRunningWorkerSet()"></app-worker-log>
       </div>
   </div>
 </div>

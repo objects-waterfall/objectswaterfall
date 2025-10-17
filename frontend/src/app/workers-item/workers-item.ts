@@ -1,7 +1,5 @@
 import { Component, input, inject, signal, output } from '@angular/core';
 import { WorkerItemModel } from '../models/worker/worker-item';
-import { environment } from '../environments/environments';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-workers-item',
@@ -13,10 +11,9 @@ import { HttpClient } from '@angular/common/http';
   ]
 })
 export class WorkersItem {
-  private http = inject(HttpClient);
-
   worker = input.required<WorkerItemModel>()
   selectedItem = output<number>()
+  stoppedWorker = output<{id: number, name: string}>()
   isMininimized = signal<boolean>(true)
   isRunning = signal<boolean>(true)
   errorMessage = signal<string | null>(null)
@@ -26,14 +23,22 @@ export class WorkersItem {
   }
 
   onStop() {
-    this.http.get(environment.baseAddress + 'stop?id=' + this.worker().id).subscribe({
-              next: response => {
-                console.log(response)
-              },
-              error: err => {
-                this.errorMessage.set(err.error.error)
-              }
-            });
-    this.isRunning.set(!this.isRunning())
+    this.stoppedWorker.emit({
+                  id: this.worker().id,
+                  name: this.worker().name
+                })
+    // this.http.get(environment.baseAddress + 'stop?id=' + this.worker().id).subscribe({
+    //           next: _ => {
+    //             this.stoppedWorker.emit({
+    //               id: this.worker().id,
+    //               name: this.worker().name
+    //             })
+    //             // this.isRunning.set(!this.isRunning())
+    //             // console.log(response)
+    //           },
+    //           error: err => {
+    //             this.errorMessage.set(err.error.error)
+    //           }
+    //         });
   }
 }

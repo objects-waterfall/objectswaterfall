@@ -10,12 +10,6 @@ select {
 }
 
 .control-panel {
-    /* background-color: #1d1d1d;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgb(95, 86, 86);
-    padding: 20px;
-    width: 30vh;
-    margin: 0 auto; */
     padding: 20px;
     margin: 0 auto;
     width: 30vh;
@@ -44,6 +38,14 @@ h2 {
     color: whitesmoke;
 }
 
+h3 {
+    color: whitesmoke;
+}
+
+p {
+    color: whitesmoke;
+}
+
 .input-group {
     margin-bottom: 15px;
     width: 27vh;
@@ -67,14 +69,21 @@ input[type="number"]{
     color: whitesmoke
 }
 
+input[type="text"]:focus,
+input[type="number"]:focus {
+  background: rgba(255, 255, 255, 0.03);
+  color: whitesmoke;
+  outline: none;
+  box-shadow: none;
+}
+
+input:-webkit-autofill {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: whitesmoke !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.03) inset !important;
+}
+
 button {
-    /* background-color: #2664ac;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold; */
     background-color: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -90,7 +99,6 @@ button {
 }
         
 button:hover {
-    /* background-color: #32448b; */
     background-color: rgba(255, 255, 255, 0.25);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
@@ -119,4 +127,19 @@ button:hover {
   justify-content: start;
   align-content: start;
   gap: 10px;
+}
+
+.bold-text {
+    color: rgb(182, 182, 182);
+    font-weight: bold;
+}
+
+.center-text {
+    display: flex;
+    align-content: center;
+}
+
+.gap {
+    display: flex;
+    gap: 1.5vh;
 }

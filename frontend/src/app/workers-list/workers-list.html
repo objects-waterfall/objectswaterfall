@@ -3,7 +3,9 @@
         <p>There are no workers running</p>
     } @else {
         @for (worker of workers(); track worker) {
-            <app-workers-item [worker]="worker" (selectedItem)="onSelectWorker($event)"></app-workers-item>
+            <app-workers-item [worker]="worker" 
+            (selectedItem)="onSelectWorker($event)" 
+            (stoppedWorker)="onWorkerStopped($event)"></app-workers-item>
         }
     }
 </div>
