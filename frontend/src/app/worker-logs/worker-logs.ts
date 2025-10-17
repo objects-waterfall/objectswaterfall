@@ -2,10 +2,11 @@ import { Component, input } from '@angular/core';
 import { LogModel } from '../models/worker/worker-log';
 import { WorkerStopStatus } from '../models/enums/worker-stop-status';
 import { WorkerRequestStatus } from '../models/enums/worker-request-status';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-worker-log',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './worker-logs.html',
   styleUrls:[
     './worker-logs.css',

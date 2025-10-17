@@ -1,0 +1,37 @@
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: rgba(255, 255, 255, 0.05);
+  color: whitesmoke;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #000;
+  max-width: 400px;
+  text-align: center;
+}
+
+.popup-col {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2vh;
+}
+
