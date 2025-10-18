@@ -109,6 +109,14 @@ func (w *SendWorker) SetLogFunc(logFunc models.LogFunc) {
 	w.LogFunc = logFunc
 }
 
+func (w *SendWorker) IsLogFunctionSet() bool {
+	if w.LogFunc != nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (w *SendWorker) work(counter *int64) {
 	w.group.Add(1)
 	go w.actualWork()

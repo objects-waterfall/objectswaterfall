@@ -1,13 +1,7 @@
 .logs-panel {
-    /* background-color: #1d1d1d;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgb(95, 86, 86);
-    padding: 20px;
-    margin: 0 auto; */
     padding: 20px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.05);
-    /* backdrop-filter: blur(20px); */
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -20,8 +14,4 @@
 
 .gap {
     gap: 5vh;
-}
-
-.error-text {
-    color: red;
 }

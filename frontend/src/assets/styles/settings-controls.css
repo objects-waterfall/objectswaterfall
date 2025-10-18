@@ -143,3 +143,7 @@ button:hover {
     display: flex;
     gap: 1.5vh;
 }
+
+.error-text {
+    color: red;
+}
