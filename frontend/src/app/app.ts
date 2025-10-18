@@ -118,10 +118,12 @@ export class App implements OnInit, OnDestroy {
       this.showWarningPopup.set(false)
       return
     }
-
+    
+    console.log(this.workerForStop)
     this.http.get(environment.baseAddress + 'stop?id=' + this.workerForStop!.id).subscribe({
               next: _ => {
                 this.removeStoppedWorkerFromList()
+                this.websocketService.send({"workerId" : -1})
               },
               error: err => {
                 this.errorMessage.set(err.error.error)
@@ -138,7 +140,8 @@ export class App implements OnInit, OnDestroy {
     }
     const index = this.runningWorkers().indexOf(worker)
     if (index > -1){
-      this.runningWorkers.set(this.runningWorkers().slice(index, this.runningWorkers().length - 1))
+      const updated = this.runningWorkers().slice(index, this.runningWorkers().length - 1)
+      this.runningWorkers.set(updated)
     }
   }
 }

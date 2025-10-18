@@ -15,6 +15,7 @@ export class LogModel {
     RequestNumber = 0
     SuccessAttemptsCount = 0
     FailedAttemptsCount = 0
+    ErrMessage = ""
 
   constructor(data?: Partial<LogModel>) {
     if (data) {
@@ -31,6 +32,7 @@ export class LogModel {
       this.RequestNumber = data.RequestNumber ?? 0
       this.SuccessAttemptsCount = data.SuccessAttemptsCount ?? 0;
       this.FailedAttemptsCount = data.FailedAttemptsCount ?? 0;
+      this.ErrMessage = data.ErrMessage ?? ""
     }
   }
 

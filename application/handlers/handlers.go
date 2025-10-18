@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"sync"
@@ -239,65 +240,55 @@ func GetWorkerResults(ctx *gin.Context) {
 }
 
 var connMutex sync.Mutex
-var dataCh = make(chan []byte, 100)
 
 func WebSocketHandler(ctx *gin.Context) {
-	errCh := make(chan error, 1)
 	conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	defer conn.Close()
-	defer close(errCh)
 	store := stores.GetWorkerStore()
 
 	for {
 		msgType, p, err := conn.ReadMessage()
 		if err != nil {
-			errCh <- err
-			break
+			log.Printf("message reading error: %s", err.Error())
+			continue
 		}
 		var wr queries.WorkerRequest
 		err = json.Unmarshal(p, &wr)
 		if err != nil {
-			errCh <- err
-			break
+			data, _ := json.Marshal(models.WorkerJobLogModel{ErrMessage: err.Error()})
+			sendMessage(conn, data, msgType)
+			continue
 		}
 
 		worker, err := store.Get(wr.WorkerId)
 		if err != nil {
-			errCh <- err
-			break
+			data, _ := json.Marshal(models.WorkerJobLogModel{ErrMessage: err.Error()})
+			sendMessage(conn, data, msgType)
+			continue
 		}
 
-		(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
-			data, _ := json.Marshal(l)
-			dataCh <- data
-			go func() {
-				for msg := range dataCh {
-					connMutex.Lock()
-					err := conn.WriteMessage(msgType, msg)
-					connMutex.Unlock()
-					if err != nil {
-						errCh <- err
-						return
-					}
-					errCh <- nil
-				}
-			}()
-		})
-
-		err = <-errCh
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+		if !(*worker).IsLogFunctionSet() {
+			(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
+				data, _ := json.Marshal(l)
+				go func() {
+					sendMessage(conn, data, msgType)
+				}()
+			})
 		}
 
 		err = conn.WriteMessage(msgType, p)
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+			log.Printf("message reading error: %s", err.Error())
 		}
 	}
+}
+
+func sendMessage(conn *websocket.Conn, msg []byte, msgType int) {
+	connMutex.Lock()
+	conn.WriteMessage(msgType, msg)
+	connMutex.Unlock()
 }

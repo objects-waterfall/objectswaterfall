@@ -16,6 +16,7 @@ type WorkerJobLogModel struct {
 	RequestNumber        int64
 	SuccessAttemptsCount int64
 	FailedAttemptsCount  int64
+	ErrMessage           string
 }
 
 type WorkerLog struct {

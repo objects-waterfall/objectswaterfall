@@ -22,4 +22,5 @@ type Worker interface {
 	GetWorkerName() string
 	Log() *models.WorkerJobLogModel
 	SetLogFunc(logFunc models.LogFunc)
+	IsLogFunctionSet() bool
 }

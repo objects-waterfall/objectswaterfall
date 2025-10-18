@@ -24,15 +24,25 @@ export class WorkerRealtimeLogs implements OnDestroy {
     }
 
     send(msg: any) {
-        if (!this.socket$){
-            new Error('WebSocket is not connected!');
+        if (!this.socket$) {
+            throw new Error('WebSocket is not connected!');
         }
         this.socket$.next(msg)
     }
 
     close(): void {
         this.destroy$.next();
-        this.socket$?.complete()
+        this.destroy$.complete();
+
+        if (this.socket$) {
+            this.socket$.complete();
+
+            // Optional: forcibly close native socket if needed
+            const nativeSocket = (this.socket$ as any)._socket;
+            nativeSocket?.close?.();
+        }
+
+        this.socket$ = undefined!;
     }
 
     ngOnDestroy(): void {
