@@ -30,14 +30,15 @@ export class WorkerRealtimeLogs implements OnDestroy {
         this.socket$.next(msg)
     }
 
-    close(): void {
+    close(closeMessae: any = null): void {
+        if (closeMessae !== undefined || closeMessae !== null) {
+            this.send(closeMessae)
+        }
         this.destroy$.next();
         this.destroy$.complete();
 
         if (this.socket$) {
             this.socket$.complete();
-
-            // Optional: forcibly close native socket if needed
             const nativeSocket = (this.socket$ as any)._socket;
             nativeSocket?.close?.();
         }

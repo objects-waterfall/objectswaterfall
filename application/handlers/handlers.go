@@ -19,6 +19,7 @@ import (
 	"objectswaterfall.com/core/mappers"
 	"objectswaterfall.com/core/models"
 	"objectswaterfall.com/core/models/enums"
+	"objectswaterfall.com/core/services"
 	"objectswaterfall.com/data/repositories"
 	"objectswaterfall.com/stores"
 )
@@ -239,8 +240,6 @@ func GetWorkerResults(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"result": resultsDto})
 }
 
-var connMutex sync.Mutex
-
 func WebSocketHandler(ctx *gin.Context) {
 	conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
@@ -249,36 +248,45 @@ func WebSocketHandler(ctx *gin.Context) {
 	}
 	defer conn.Close()
 	store := stores.GetWorkerStore()
+	var worker *services.Worker
+	var connMutex sync.Mutex
 
 	for {
 		msgType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Printf("message reading error: %s", err.Error())
-			continue
+			break
 		}
 		var wr queries.WorkerRequest
 		err = json.Unmarshal(p, &wr)
 		if err != nil {
 			data, _ := json.Marshal(models.WorkerJobLogModel{ErrMessage: err.Error()})
-			sendMessage(conn, data, msgType)
+			sendMessage(conn, data, msgType, &connMutex)
+			continue
+		}
+		if worker != nil && (*worker).IsLogFunctionSet() {
+			(*worker).SetLogFunc(nil) // remove previous log func
+		}
+		if !store.ExistsById(wr.WorkerId) {
 			continue
 		}
 
-		worker, err := store.Get(wr.WorkerId)
+		worker, err = store.Get(wr.WorkerId)
 		if err != nil {
 			data, _ := json.Marshal(models.WorkerJobLogModel{ErrMessage: err.Error()})
-			sendMessage(conn, data, msgType)
+			sendMessage(conn, data, msgType, &connMutex)
 			continue
 		}
 
-		if !(*worker).IsLogFunctionSet() {
-			(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
-				data, _ := json.Marshal(l)
-				go func() {
-					sendMessage(conn, data, msgType)
-				}()
-			})
-		}
+		(*worker).SetLogFunc(func(l models.WorkerJobLogModel) {
+			data, _ := json.Marshal(l)
+			go func() {
+				err := sendMessage(conn, data, msgType, &connMutex)
+				if err != nil {
+					(*worker).SetLogFunc(nil) // remove log func on error
+				}
+			}()
+		})
 
 		err = conn.WriteMessage(msgType, p)
 		if err != nil {
@@ -287,8 +295,12 @@ func WebSocketHandler(ctx *gin.Context) {
 	}
 }
 
-func sendMessage(conn *websocket.Conn, msg []byte, msgType int) {
+func sendMessage(conn *websocket.Conn, msg []byte, msgType int, connMutex *sync.Mutex) error {
 	connMutex.Lock()
-	conn.WriteMessage(msgType, msg)
-	connMutex.Unlock()
+	defer connMutex.Unlock()
+	if err := conn.WriteMessage(msgType, msg); err != nil {
+		log.Printf("message writing error: %s", err.Error())
+		return err
+	}
+	return nil
 }

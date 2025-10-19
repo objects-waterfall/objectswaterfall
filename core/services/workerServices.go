@@ -13,6 +13,7 @@ type WorkerStore interface {
 	Remove(id int) error
 	Exists(name string) bool
 	All() *[]models.WorkerShort
+	ExistsById(id int) bool
 }
 
 type Worker interface {

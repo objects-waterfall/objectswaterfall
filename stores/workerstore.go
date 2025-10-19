@@ -74,6 +74,13 @@ func (w *workerStore) Exists(name string) bool {
 	return false
 }
 
+func (w *workerStore) ExistsById(id int) bool {
+	if _, ok := w.workers[id]; ok {
+		return true
+	}
+	return false
+}
+
 func (w *workerStore) CancelWork(workerId int) error {
 	if _, ok := (*w).workers[workerId]; !ok {
 		return fmt.Errorf("there is no worker with id %d", workerId)
