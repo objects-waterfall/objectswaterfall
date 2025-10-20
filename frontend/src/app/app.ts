@@ -137,5 +137,6 @@ export class App implements OnInit, OnDestroy {
     }
     const updated = this.runningWorkers().filter(w => w.id !== id)
     this.runningWorkers.set(updated)
+    this.workerForStop = undefined
   }
 }
