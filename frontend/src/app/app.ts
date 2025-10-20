@@ -131,15 +131,11 @@ export class App implements OnInit, OnDestroy {
   }
 
   private removeStoppedWorkerFromList(){
-    const worker = this.runningWorkers().find(x => x.id ===  this.workerForStop!.id)
-    if (!worker)
-    {
+    const id = this.workerForStop?.id
+    if (id === undefined) {
       return
     }
-    const index = this.runningWorkers().indexOf(worker)
-    if (index > -1){
-      const updated = this.runningWorkers().slice(index, this.runningWorkers().length - 1)
-      this.runningWorkers.set(updated)
-    }
+    const updated = this.runningWorkers().filter(w => w.id !== id)
+    this.runningWorkers.set(updated)
   }
 }
