@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -53,6 +55,9 @@ func main() {
 	}
 
 	//engine.Any("/logsConnection", gin.WrapH(mux))
-
-	engine.Run(":8888")
+	port := os.Getenv("PORT")
+	if port == "" {
+		panic("there is no port set in config.env")
+	}
+	engine.Run(fmt.Sprintf(":%s", port))
 }
