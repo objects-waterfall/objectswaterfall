@@ -31,11 +31,6 @@
         <button type="submit" [disabled]="isLoading()">
             {{ isLoading() ? 'Saving...' : 'Add Worker' }}
         </button>
-        @if (errorMessage()) {
-            <div class="error-message">
-                {{ errorMessage() }}
-            </div>
-        }
     }
     </form>
     <div (click)="resize()">
