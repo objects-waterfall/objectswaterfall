@@ -229,9 +229,6 @@ func (r mySqlRepositiry[T]) GetWorkerResults(workerName string, take int) (*[]mo
 			return nil, err
 		}
 		logs = append(logs, log)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return &logs, nil

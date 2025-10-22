@@ -1,0 +1,26 @@
+<div class="col">
+    @if (!workerName()) {
+        <p>All Workers' last Results</p>
+    } @else {
+        @if(results() == null || results().length == 0) {
+            <p>{{workerName()}} hasn't had any Results yet</p>
+        } @else {
+            <p> {{workerName()}} last Results</p>
+        }
+    }
+    <label class="bold-text" for="worker-name">Choose Worker Name</label>
+    <select id="worker-name" name="worker-name" placeholder="Enter Worker Name for Start"
+        (change)="onSelect($event)">
+            <option [ngValue]="null" disabled selected>Select a Worker</option>
+                @for (worker of workers(); track worker) {
+            <option value="{{worker.id}}">{{worker.name}}</option>
+        }
+    </select>
+     @if (workers() != []){
+        <div class="result-list">
+        @for (r of results(); track r ) {
+            <app-worker-result-item [result]="r"></app-worker-result-item>
+        }
+    </div>
+    }
+</div>

@@ -1,0 +1,37 @@
+<div class="card">
+        <div class="col">
+            <div class="gap">
+                <span class="bold-text">Worker name: </span>
+                <span>{{ result().WorkerName }}</span>
+            </div>
+            <div class="gap">
+                <span class="bold-text">Start at: </span>
+                <span>{{ result().StartTime | date:'EEEE d, MMMM, y, HH:mm:ss (dd.MM.yyyy HH:mm:ss)' }}</span>
+            </div>
+
+            <div class="gap">
+                <span class="bold-text">Stopped at: </span>
+                <span>{{ result().StopTime | date:'EEEE d, MMMM, y, HH:mm:ss (dd.MM.yyyy HH:mm:ss)' }}</span>
+            </div>
+
+            <div class="gap">
+                <span class="bold-text">Items have been sent: </span>
+                <span>{{ result().ItemsSended }}</span>
+            </div>
+
+            <div class="gap">
+                <span class="bold-text">Success Attempts: </span>
+                <span>{{ result().SuccessAttemptsCount }}</span>
+            </div>
+
+            <div class="gap">
+                <span class="bold-text">Failed Attempts: </span>
+                <span>{{ result().FailedAttemptsCount }}</span>
+            </div>
+
+            <div class="gap">
+                <span class="bold-text">Median time: </span>
+                <span>{{ result().MedianReuestDurationTime }} sec</span>
+            </div>
+        </div>
+</div>

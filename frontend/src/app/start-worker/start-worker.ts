@@ -2,7 +2,7 @@ import { Component, signal, inject, input, output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { WorkerItemModel } from '../models/worker/worker-item';
 import { FormsModule } from '@angular/forms';
-import { AuthModel, StartWorkerData } from '../models/worker/start-worker';
+import { StartWorkerData } from '../models/worker/start-worker';
 import { environment } from '../environments/environments';
 
 @Component({
