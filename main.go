@@ -48,6 +48,7 @@ func main() {
 		api.GET("/getWorkers", handlers.GetWorkers)
 		api.GET("/getRunningWorkers", handlers.GetRunningWorkers)
 		api.GET("/getWorkerResults", handlers.GetWorkerResults)
+		api.GET("/getWorkersLastResults", handlers.GetLastWorkersResults)
 		api.GET("/logsWs", handlers.WebSocketHandler)
 	}
 

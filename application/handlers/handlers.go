@@ -220,13 +220,45 @@ func GetRunningWorkers(ctx *gin.Context) {
 
 func GetWorkerResults(ctx *gin.Context) {
 	workerName := ctx.Query("workerName")
+	take, err := strconv.Atoi(ctx.Query("take"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	repo, err := repositories.NewRepository[any]()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	results, err := repo.GetWorkerResults(workerName)
+	results, err := repo.GetWorkerResults(workerName, take)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var resultsDto []dtos.WorkerResultsDto
+	for _, v := range *results {
+		resultsDto = append(resultsDto, dtos.ToLogResult(v))
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"result": resultsDto})
+}
+
+func GetLastWorkersResults(ctx *gin.Context) {
+	take, err := strconv.Atoi(ctx.Query("take"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	repo, err := repositories.NewRepository[any]()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	results, err := repo.GetWorkerResults("", take)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -83,4 +83,19 @@ const GetWorkerResults = `SELECT
     wr.Failed_Requests
 	FROM Worker_Settings ws
 	JOIN Worker_Results wr ON ws.id = wr.Worker_Id
-	WHERE ws.Worker_Name = ?`
+	WHERE ws.Worker_Name = ?
+	ORDER BY wr.id DESC
+	LIMIT ?`
+
+const GetWorkersLastResults = `SELECT
+    ws.Worker_Name,
+    wr.Start_Time,
+    wr.Stop_Time,
+    wr.Median_Request_Duration,
+    wr.Sended,
+    wr.Success_Requests,
+    wr.Failed_Requests
+	FROM Worker_Settings ws
+	JOIN Worker_Results wr ON ws.id = wr.Worker_Id
+	ORDER BY wr.id DESC
+	LIMIT ?`
