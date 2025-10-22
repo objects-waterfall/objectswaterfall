@@ -4,6 +4,8 @@ import { WorkerItemModel } from '../models/worker/worker-item';
 import { FormsModule } from '@angular/forms';
 import { StartWorkerData } from '../models/worker/start-worker';
 import { environment } from '../environments/environments';
+import { ToastrService } from 'ngx-toastr';
+import e from 'express';
 
 @Component({
   selector: 'app-start-worker',
@@ -18,13 +20,14 @@ export class StartWorker {
   private http = inject(HttpClient);
 
   placeholdertext = '{\n "UserName": "Name", \n "UserPassword": "Password" \n}'
-  errorMessage = signal<string | null>(null)
   isMinimized = signal(false)
   // TODO: separate models (StartWorkerData and AuthModel) in here and make a checkbox like "use auth" or something
   startWorkerData = signal(new StartWorkerData())
   workers = input<WorkerItemModel[]>()
   selected = signal(0)
   newWorkerStarted = output<number>()
+
+  constructor(private toastr: ToastrService) {}
 
   onSelect(event: Event){
     const selectedWorker = (event.target as HTMLSelectElement).value;
@@ -37,7 +40,11 @@ export class StartWorker {
             this.newWorkerStarted.emit(res.workerId)
           },
           error: err => {
-            this.errorMessage.set(err.error.error)
+            if (err.name === 'HttpErrorResponse'){
+              this.toastr.error(`Connection error. ${err.message}`, 'Error');
+            } else {
+              this.toastr.error(err.message, 'Error');
+            }
           }
         });
   }

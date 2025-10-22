@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { Observable, share, Subject, takeUntil } from "rxjs";
 import { webSocket, WebSocketSubject } from "rxjs/webSocket";
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
     providedIn: 'root'
@@ -9,6 +10,8 @@ export class WorkerRealtimeLogs implements OnDestroy {
     socket$!: WebSocketSubject<any>
     destroy$ = new Subject<void>()
     messages$!: Observable<any>
+
+    constructor(private toastr: ToastrService) {}
 
     startConnection(url: string) {
         if (this.socket$){
@@ -25,7 +28,7 @@ export class WorkerRealtimeLogs implements OnDestroy {
 
     send(msg: any) {
         if (!this.socket$) {
-            throw new Error('WebSocket is not connected!');
+            this.toastr.error('WebSocket connection is not established.', 'Error');
         }
         this.socket$.next(msg)
     }

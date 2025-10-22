@@ -5,15 +5,7 @@ import { WorkerItemModel } from '../models/worker/worker-item';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environments';
-
-const test = [
-    new WorkerResultsDto(),
-    new WorkerResultsDto(),
-    new WorkerResultsDto(),
-    new WorkerResultsDto(),
-    new WorkerResultsDto(),
-    new WorkerResultsDto(),
-]
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-worker-result-list',
@@ -28,10 +20,11 @@ const test = [
 export class WorkerResultList implements OnInit {
   private http = inject(HttpClient);
   workers = input<WorkerItemModel[]>()
-  results = signal<WorkerResultsDto[]>(test)
+  results = signal<WorkerResultsDto[]>([])
   selected = signal(-1)
-  errorMessage = signal<string | null>(null)
   workerName = signal<string>("")
+
+  constructor(private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.http.get<{result: WorkerResultsDto[]}>(environment.baseAddress + `getWorkerResults?take=9`).subscribe({
@@ -43,7 +36,11 @@ export class WorkerResultList implements OnInit {
         this.results.set([...res.result]);
       },
       error: err => {
-        this.errorMessage.set(err.error.error)
+        if (err.name === 'HttpErrorResponse'){
+              this.toastr.error(`Connection error. ${err.message}`, 'Error');
+            } else {
+              this.toastr.error(err.message, 'Error');
+            }
       }
     });
   }
@@ -67,7 +64,11 @@ export class WorkerResultList implements OnInit {
         this.results.set([...res.result]);
       },
       error: err => {
-        this.errorMessage.set(err.error.error)
+        if (err.name === 'HttpErrorResponse'){
+              this.toastr.error(`Connection error. ${err.message}`, 'Error');
+            } else {
+              this.toastr.error(err.message, 'Error');
+            }
       }
     });
   }

@@ -42,7 +42,12 @@ export class WorkersService {
                 }
                 return new Result([...workers], "")
             }),
-            catchError(err => of(new Result(null, err.error.error)))
+            catchError(err => {
+                if(err.name === 'HttpErrorResponse'){
+                    return of(new Result(null, `Connection error. ${err.message}`))
+                }
+                return of(new Result(null, "An unknown error occurred"))
+            })
         )
     }
 }

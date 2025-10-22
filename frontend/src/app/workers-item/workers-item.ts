@@ -16,7 +16,6 @@ export class WorkersItem {
   stoppedWorker = output<{id: number, name: string}>()
   isMininimized = signal<boolean>(true)
   isRunning = signal<boolean>(true)
-  errorMessage = signal<string | null>(null)
 
   onSelectedHandler() {
     this.selectedItem.emit(this.worker().id)

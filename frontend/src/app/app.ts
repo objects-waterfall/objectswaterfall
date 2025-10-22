@@ -7,7 +7,7 @@ import { WorkersList } from "./workers-list/workers-list";
 import { WorkerItemModel } from './models/worker/worker-item';
 
 import { WorkerRealtimeLogs } from './services/realtime/web-sockets.service';
-import { single, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from './environments/environments';
 import { LogModel } from './models/worker/worker-log';
 import { WorkersService } from './services/workers.service';
@@ -15,6 +15,7 @@ import { firstValueFrom } from 'rxjs';
 import { WarningPopup } from "./warning-popup/warning-popup";
 import { HttpClient } from '@angular/common/http';
 import { WorkerResultList } from './worker-result-list/worker-result-list';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,7 @@ import { WorkerResultList } from './worker-result-list/worker-result-list';
     WorkersList, 
     WorkerLog, 
     WarningPopup,
-    WorkerResultList
+    WorkerResultList,
   ],
   templateUrl: './app.html',
   styleUrls: ['./app.css',
@@ -49,7 +50,9 @@ export class App implements OnInit, OnDestroy {
   isRunningWorkerSet = signal<boolean>(false)
   showWarningPopup = signal<boolean>(false)
   warningTitle = signal<string>("Stopping the shit worker")
-  warningMessage = signal<string>(`You are about to ptop the worker "shit". Are you sure?`)
+  warningMessage = signal<string>(`You are about to stop the worker "shit". Are you sure?`)
+
+  constructor(private toastr: ToastrService) {}
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe()
@@ -67,7 +70,10 @@ export class App implements OnInit, OnDestroy {
           this.workerLog.set(new LogModel(msg))
         }
       },
-      error: err => this.errorMessage = err,
+      error: err => {
+        console.log(err)
+        this.toastr.error(`web socket connection error`, 'Error');
+      },
       complete: () => console.log('Socket close')
     })
   }
@@ -82,6 +88,7 @@ export class App implements OnInit, OnDestroy {
     if (res.Err !== "") {
       this.errorMessage.set(res.Err);
       this.isLoading.set(false);
+      this.toastr.error(res.Err, 'Error');
       return;
     }
     this.runningWorkers.set([...res.Data!]); // ensure new array reference
@@ -92,8 +99,8 @@ export class App implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.workersService.getWorkers('getWorkers').subscribe(res => {
       if (res.Err !== "") {
-        this.errorMessage.set(res.Err);
         this.isLoading.set(false);
+        this.toastr.error(res.Err, 'Error');
         return;
       }
       this.existingWorkers.set([...res.Data!]);
