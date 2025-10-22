@@ -113,11 +113,12 @@ button:hover {
   display: flex;
   justify-content: center;
   gap: 3vh;
-  width: 80%;
+  width: 90%;
 }
 
 .row {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
 }
 
@@ -132,6 +133,11 @@ button:hover {
 .bold-text {
     color: rgb(182, 182, 182);
     font-weight: bold;
+}
+
+.small-text {
+    font-size: small;
+    color: whitesmoke;
 }
 
 .center-text {

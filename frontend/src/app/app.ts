@@ -14,10 +14,19 @@ import { WorkersService } from './services/workers.service';
 import { firstValueFrom } from 'rxjs';
 import { WarningPopup } from "./warning-popup/warning-popup";
 import { HttpClient } from '@angular/common/http';
+import { WorkerResultList } from './worker-result-list/worker-result-list';
 
 @Component({
   selector: 'app-root',
-  imports: [WorkerSettings, SeedData, StartWorker, WorkerLog, WorkersList, WorkerLog, WarningPopup],
+  imports: [WorkerSettings, 
+    SeedData, 
+    StartWorker, 
+    WorkerLog, 
+    WorkersList, 
+    WorkerLog, 
+    WarningPopup,
+    WorkerResultList
+  ],
   templateUrl: './app.html',
   styleUrls: ['./app.css',
     '../assets/styles/settings-controls.css'

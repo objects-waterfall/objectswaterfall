@@ -28,7 +28,7 @@ export class LogModel {
       this.RequestDirationTime = this.formatDuration(data.RequestDirationTime);
       this.MedianReuestDurationTime = this.formatDuration(data.MedianReuestDurationTime);
       this.StartTime = new Date(data.StartTime ?? new Date());
-      this.StopTime = data.StopTime ? new Date(data.StopTime) : null;
+      this.StopTime = data.StopTime ? new Date(data.StopTime!) : null;
       this.RequestNumber = data.RequestNumber ?? 0
       this.SuccessAttemptsCount = data.SuccessAttemptsCount ?? 0;
       this.FailedAttemptsCount = data.FailedAttemptsCount ?? 0;

@@ -16,7 +16,12 @@
                             </div>
                             <div class="gap">
                                 <span class="bold-text">Stopped at: </span>
-                                <span>{{inputLog().StopTime | date:'EEEE d, MMMM, y, HH:mm:ss (dd.MM.yyyy HH:mm:ss)'}}</span>
+                                @if (inputLog().StopTime === null || inputLog().StopTime === undefined) {
+                                    <span>Still running</span>
+                                } @else {
+                                    <span>{{inputLog().StopTime | date:'EEEE d, MMMM, y, HH:mm:ss (dd.MM.yyyy HH:mm:ss)'}}</span>
+
+                                }
                             </div>
                             <div class="gap">
                                 <span class="bold-text">Worker status: </span>
