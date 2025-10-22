@@ -187,8 +187,15 @@ func (r mySqlRepositiry[T]) AddWorkerResult(log models.WorkerJobLogModel) error 
 	return nil
 }
 
-func (r mySqlRepositiry[T]) GetWorkerResults(workerName string) (*[]models.WorkerJobLogModel, error) {
-	rows, err := data.DbContext.Db.Query(data.GetWorkerResults, workerName)
+func (r mySqlRepositiry[T]) GetWorkerResults(workerName string, take int) (*[]models.WorkerJobLogModel, error) {
+	var rows *sql.Rows
+	var err error
+	if workerName == "" {
+		rows, err = data.DbContext.Db.Query(data.GetWorkersLastResults, take)
+	} else {
+		rows, err = data.DbContext.Db.Query(data.GetWorkerResults, workerName, take)
+	}
+
 	if err != nil {
 		return nil, err
 	}
