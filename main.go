@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -59,5 +60,5 @@ func main() {
 	if port == "" {
 		panic("there is no port set in config.env")
 	}
-	engine.Run(fmt.Sprintf(":%s", port))
+	log.Fatalf("web engine run error: %s", engine.Run(fmt.Sprintf(":%s", port)))
 }
